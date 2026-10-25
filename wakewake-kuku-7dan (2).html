@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>わけわけ ガッチャンコ！ 7のだん</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff8e7;
+  --ink:#5d4a3a;
+  --cream:#fffdf5;
+  --top-c:#f5a623;
+  --top-b:#c97f0e;
+  --btm-c:#6db3e8;
+  --btm-b:#3d7fb8;
+  --green:#a8e6a3;
+  --yellow:#ffe28a;
+  --red:#f7a8a8;
+  --purple:#e6ccff;
+  --shadow:0 4px 0 rgba(93,74,58,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN','BIZ UDGothic','Yu Gothic',sans-serif;
+  background:var(--bg);
+  background-image:radial-gradient(rgba(93,74,58,.06) 2px, transparent 2px);
+  background-size:26px 26px;
+  color:var(--ink);overflow:hidden;user-select:none;touch-action:manipulation;
+}
+.wobbly{border:3px solid var(--ink);border-radius:255px 15px 225px 15px / 15px 225px 15px 255px;}
+.wobbly2{border:3px solid var(--ink);border-radius:15px 225px 15px 255px / 255px 15px 225px 15px;}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:12px;}
+.screen.active{display:flex;}
+.btn{
+  font-family:inherit;font-weight:900;color:var(--ink);cursor:pointer;
+  background:var(--yellow);font-size:clamp(16px,2.4vw,24px);
+  padding:12px 34px;margin:6px;box-shadow:var(--shadow);transition:transform .1s;
+}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(93,74,58,.25);}
+.btn.secondary{background:var(--cream);font-size:clamp(13px,1.9vw,18px);padding:9px 22px;}
+.btn.go{background:var(--green);}
+.btn:disabled{opacity:.4;cursor:default;}
+.btn:disabled:active{transform:none;box-shadow:var(--shadow);}
+.smallbtn{
+  font-family:inherit;font-weight:900;color:var(--ink);cursor:pointer;
+  background:var(--cream);border:2.5px solid var(--ink);border-radius:12px 4px 12px 4px;
+  font-size:clamp(12px,1.7vw,15px);padding:5px 14px;box-shadow:0 3px 0 rgba(93,74,58,.25);
+}
+.smallbtn:active{transform:translateY(2px);box-shadow:none;}
+
+/* ===== タイトル ===== */
+#screen-title{overflow-y:auto;justify-content:flex-start;padding-top:16px;}
+#screen-title h1{
+  font-size:clamp(24px,4.6vw,50px);font-weight:900;letter-spacing:.04em;
+  background:var(--cream);padding:14px 32px;margin-bottom:8px;
+  box-shadow:var(--shadow);transform:rotate(-1.5deg);text-align:center;
+}
+#screen-title .sub{
+  font-size:clamp(12px,1.9vw,19px);font-weight:700;margin-bottom:8px;
+  background:var(--yellow);padding:5px 18px;border-radius:999px;border:2px dashed var(--ink);
+  text-align:center;
+}
+.title-emoji{font-size:clamp(40px,7vw,80px);margin-bottom:2px;animation:bob 2.4s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+#danLabel{
+  font-size:clamp(20px,3.2vw,32px);font-weight:900;margin:6px 0 12px;
+  background:var(--yellow);border:3px solid var(--ink);border-radius:999px;
+  padding:4px 26px;box-shadow:var(--shadow);
+}
+#danGrid{
+  display:grid;grid-template-columns:repeat(9,1fr);gap:6px;
+  width:min(620px,94vw);margin-bottom:10px;
+}
+.danbtn{
+  font-family:inherit;font-weight:900;color:var(--ink);cursor:pointer;
+  font-size:clamp(13px,2.2vw,20px);padding:8px 0;background:var(--cream);
+  border:3px solid var(--ink);border-radius:12px 4px 12px 4px;
+  box-shadow:0 3px 0 rgba(93,74,58,.25);position:relative;transition:transform .08s;
+}
+.danbtn:active{transform:translateY(2px);box-shadow:none;}
+.danbtn.sel{background:var(--yellow);border-style:dashed;transform:scale(1.1);}
+.danbtn:disabled{opacity:.35;cursor:default;box-shadow:none;}
+.danbtn .mini{position:absolute;top:-9px;right:-5px;font-size:11px;}
+#danNote{font-size:clamp(10px,1.5vw,13px);font-weight:700;opacity:.7;margin:-4px 0 6px;}
+#levelLabel{font-size:clamp(14px,2.2vw,20px);font-weight:900;margin:4px 0 8px;}
+#levelRow{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:6px;}
+.lvbtn{
+  font-family:inherit;font-weight:900;color:var(--ink);cursor:pointer;background:var(--cream);
+  border:3px solid var(--ink);border-radius:14px 5px 14px 5px;box-shadow:0 3px 0 rgba(93,74,58,.25);
+  padding:10px 20px;min-width:min(260px,44vw);text-align:center;transition:transform .08s;
+}
+.lvbtn .lvname{display:block;font-size:clamp(17px,2.6vw,26px);}
+.lvbtn .lvdesc{display:block;font-size:clamp(11px,1.5vw,14px);margin-top:3px;}
+.lvbtn.sel{background:var(--yellow);border-style:dashed;transform:scale(1.06);}
+.lvbtn.sel.hard{background:var(--purple);}
+.lvbtn:active{transform:translateY(2px);box-shadow:none;}
+#kakeLabel{font-size:clamp(14px,2.2vw,20px);font-weight:900;margin:4px 0 8px;}
+#kakeGrid{
+  display:grid;grid-template-columns:repeat(9,1fr);gap:8px;
+  width:min(760px,96vw);margin-bottom:12px;
+}
+#kakeGrid .danbtn{font-size:clamp(13px,2.3vw,22px);padding:12px 0;white-space:nowrap;}
+@media (max-width:560px){ #kakeGrid{grid-template-columns:repeat(5,1fr);} }
+#missionProg{font-size:clamp(12px,1.8vw,16px);font-weight:700;margin-top:-2px;margin-bottom:4px;opacity:.85;}
+
+/* ===== プレイ ===== */
+#screen-play{justify-content:flex-start;padding:8px 14px;}
+#probBar{
+  width:100%;max-width:1060px;display:flex;gap:6px;margin-bottom:6px;
+  justify-content:center;flex-wrap:wrap;align-items:center;
+}
+.pchip{
+  font-family:inherit;font-weight:900;font-size:clamp(12px,1.7vw,16px);color:var(--ink);
+  padding:5px 10px;border:2.5px solid var(--ink);border-radius:12px 4px 12px 4px;
+  background:var(--cream);cursor:pointer;position:relative;
+}
+.pchip.now{background:var(--yellow);transform:scale(1.1);border-style:dashed;}
+.pchip.master{background:var(--green);}
+.pchip .mini{position:absolute;top:-9px;right:-7px;font-size:12px;}
+#missionBanner{
+  font-size:clamp(14px,2.1vw,20px);font-weight:900;background:var(--purple);
+  border:3px solid var(--ink);border-radius:14px 5px 14px 5px;padding:6px 16px;
+}
+.dantag{
+  font-size:clamp(13px,2vw,18px);font-weight:900;background:var(--yellow);
+  padding:3px 14px;border:2.5px solid var(--ink);border-radius:999px;
+}
+#speech{width:100%;max-width:1060px;display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;}
+#chara{font-size:clamp(28px,4.2vw,42px);line-height:1;filter:drop-shadow(0 2px 0 rgba(93,74,58,.3));}
+#bubble{
+  background:var(--cream);padding:7px 16px;font-weight:700;
+  font-size:clamp(13px,1.9vw,18px);box-shadow:var(--shadow);flex:1;
+  min-height:42px;display:flex;align-items:center;
+}
+#playmain{width:100%;max-width:1060px;flex:1;display:flex;gap:12px;min-height:0;}
+
+/* --- ●のずエリア --- */
+#arrayPane{
+  flex:1.2;background:var(--cream);box-shadow:var(--shadow);
+  display:flex;align-items:center;justify-content:center;min-width:0;position:relative;
+  padding:14px;
+}
+#arrayStage{position:relative;display:flex;align-items:center;gap:10px;}
+#dotField{position:relative;}
+.aRow{display:flex;gap:4px;margin-bottom:4px;}
+.aRow:last-child{margin-bottom:0;}
+.adot{
+  width:var(--dotsz);height:var(--dotsz);border-radius:50%;
+  background:var(--top-c);border:2px solid var(--top-b);
+  transition:background .25s,border-color .25s;
+}
+.adot.btm{background:var(--btm-c);border-color:var(--btm-b);}
+#divider{position:absolute;left:-26px;right:-26px;height:0;cursor:grab;z-index:5;touch-action:none;}
+#divider.drag{cursor:grabbing;}
+#divLine{
+  position:absolute;left:22px;right:22px;top:-2.5px;height:5px;border-radius:99px;background:var(--ink);
+}
+#divLine::before,#divLine::after{
+  content:'';position:absolute;top:50%;width:14px;height:14px;border-radius:50%;
+  background:var(--red);border:2.5px solid var(--ink);transform:translateY(-50%);
+}
+#divLine::before{left:-8px;} #divLine::after{right:-8px;}
+#divHandle{
+  position:absolute;right:-30px;top:50%;transform:translateY(-50%);
+  background:var(--red);border:2.5px solid var(--ink);border-radius:12px;
+  font-size:15px;font-weight:900;padding:6px 8px;line-height:1;
+  box-shadow:0 3px 0 rgba(93,74,58,.3);white-space:nowrap;
+}
+#braces{display:flex;flex-direction:column;font-weight:900;}
+.brace{display:flex;align-items:center;gap:5px;transition:height .1s;}
+.brace .bline{width:10px;border:3px solid var(--ink);border-left:none;border-radius:0 10px 10px 0;align-self:stretch;margin:2px 0;}
+.brace .blabel{font-size:clamp(14px,2.1vw,20px);white-space:nowrap;}
+.brace.top .blabel{color:var(--top-b);}
+.brace.btm .blabel{color:var(--btm-b);}
+#divBtns{position:absolute;left:8px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;}
+.divbtn{
+  font-family:inherit;width:44px;height:44px;font-size:20px;font-weight:900;color:var(--ink);
+  background:var(--yellow);border:3px solid var(--ink);border-radius:50%;cursor:pointer;
+  box-shadow:0 3px 0 rgba(93,74,58,.3);
+}
+.divbtn:active{transform:translateY(2px);box-shadow:none;}
+
+/* --- 右パネル --- */
+#sidePane{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;}
+#eqCard{background:var(--cream);box-shadow:var(--shadow);padding:10px 12px;text-align:center;flex-shrink:0;}
+#eqMain{font-size:clamp(20px,3.4vw,34px);font-weight:900;letter-spacing:.02em;white-space:nowrap;overflow:hidden;}
+#eqMain .tpart{color:var(--top-b);}
+#eqMain .bpart{color:var(--btm-b);}
+#eqMain .box{
+  display:inline-block;min-width:1.6em;border:3px dashed var(--ink);border-radius:10px;
+  background:#fff;padding:0 5px;color:#e05555;
+}
+#eqMain .fbox{
+  display:inline-block;min-width:1.4em;border:3px dashed var(--ink);border-radius:10px;
+  background:#fff;padding:0 4px;margin:0 2px;cursor:pointer;text-align:center;
+}
+#eqMain .tpart .fbox{border-color:var(--top-b);background:#fff1d6;color:var(--top-b);}
+#eqMain .bpart .fbox{border-color:var(--btm-b);background:#e3f1fc;color:var(--btm-b);}
+#eqMain .fbox.idle{opacity:.7;cursor:default;}
+#eqMain .fbox.cur{border-style:solid;border-width:4px;transform:scale(1.1);}
+#eqMain .tpart .fbox.cur{background:#ffd98f;}
+#eqMain .bpart .fbox.cur{background:#b9dcf7;}
+#eqMain .fixed{display:inline-block;min-width:1.6em;border:3px solid transparent;padding:0 5px;}
+#eqSteps{
+  margin-top:6px;padding-top:6px;border-top:2.5px dashed var(--ink);
+  font-size:clamp(18px,2.9vw,28px);font-weight:900;
+}
+.stepLine{padding:2px 0;opacity:.55;}
+.stepLine.now{opacity:1;}
+#eqSteps .tpart{color:var(--top-b);}
+#eqSteps .bpart{color:var(--btm-b);}
+#eqSteps .box{
+  display:inline-block;min-width:1.6em;border:3px dashed var(--ink);border-radius:10px;
+  background:#fff;padding:0 5px;color:#e05555;
+}
+#eqSteps .done{
+  display:inline-block;min-width:1.6em;border:3px solid var(--ink);border-radius:10px;
+  background:var(--green);padding:0 5px;
+}
+#eqSub{font-size:clamp(12px,1.7vw,15px);font-weight:700;margin-top:3px;min-height:1.4em;}
+#actionRow{display:flex;justify-content:center;flex-shrink:0;flex-wrap:wrap;}
+#actionRow .btn{white-space:nowrap;max-width:100%;}
+#btnCheck{font-size:clamp(14px,2vw,22px);padding:12px clamp(12px,2vw,34px);}
+#pad{flex:1;display:none;grid-template-columns:repeat(3,1fr);gap:6px;min-height:0;}
+#pad.active{display:grid;}
+.key{
+  font-family:inherit;font-weight:900;font-size:clamp(18px,2.8vw,28px);color:var(--ink);
+  background:var(--cream);cursor:pointer;box-shadow:var(--shadow);
+  border:3px solid var(--ink);border-radius:14px 5px 14px 5px;transition:transform .08s;
+}
+.key:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(93,74,58,.25);}
+.key.ok{background:var(--green);grid-column:span 2;font-size:clamp(15px,2.2vw,22px);}
+.key.del{background:var(--red);font-size:clamp(14px,2vw,20px);}
+
+/* たしかめOKオーバーレイ */
+#doneOverlay{
+  position:absolute;inset:0;background:rgba(93,74,58,.35);
+  display:none;align-items:center;justify-content:center;z-index:30;
+}
+#doneOverlay.active{display:flex;}
+#doneCard{
+  background:var(--cream);padding:22px 40px;text-align:center;box-shadow:var(--shadow);
+  animation:popin .35s both;max-width:92%;
+}
+@keyframes popin{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+#doneTitle{font-size:clamp(22px,3.6vw,36px);font-weight:900;}
+#doneEq{
+  font-size:clamp(17px,2.6vw,26px);font-weight:900;margin-top:6px;
+  background:var(--yellow);border-radius:999px;padding:4px 20px;display:inline-block;
+}
+#doneStamp{font-size:clamp(34px,6vw,60px);margin-top:6px;}
+#doneBtns{margin-top:10px;display:flex;flex-wrap:wrap;justify-content:center;}
+
+/* ===== きろく画面 ===== */
+#screen-record{overflow-y:auto;justify-content:flex-start;padding-top:16px;}
+#screen-record h2{
+  font-size:clamp(22px,3.8vw,38px);font-weight:900;background:var(--cream);
+  padding:8px 30px;box-shadow:var(--shadow);margin-bottom:8px;transform:rotate(-1deg);
+}
+#recHint{
+  font-size:clamp(12px,1.8vw,16px);font-weight:700;background:var(--yellow);
+  border:2px dashed var(--ink);border-radius:14px;padding:6px 14px;margin-bottom:8px;
+  max-width:660px;text-align:center;
+}
+#recMsg{
+  min-height:1.6em;font-size:clamp(13px,1.9vw,17px);font-weight:900;margin-bottom:6px;
+  color:var(--top-b);
+}
+#recTableWrap{background:var(--cream);box-shadow:var(--shadow);padding:12px;max-width:820px;width:100%;position:relative;z-index:1;overflow-x:auto;}
+table#recTable{width:100%;border-collapse:collapse;}
+#recTable th,#recTable td{
+  border:2px solid var(--ink);text-align:center;font-weight:900;
+  font-size:clamp(11px,1.7vw,16px);padding:4px 2px;
+}
+#recTable th{background:var(--purple);}
+#recTable td.cell{cursor:pointer;background:#f3efe2;min-width:44px;height:46px;font-size:clamp(14px,2.2vw,21px);}
+#recTable td.cell.got{background:var(--green);}
+#recTable td.cell.fav{background:var(--yellow);}
+#recTable td.rowh{background:var(--yellow);}
+#recBackBtns{margin-top:12px;display:flex;flex-wrap:wrap;justify-content:center;}
+.shake{animation:shake .4s;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.confetti{position:fixed;top:-20px;font-size:22px;z-index:50;pointer-events:none;animation:fall linear forwards;}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);}}
+</style>
+</head>
+<body>
+
+<!-- ===== タイトル ===== -->
+<div id="screen-title" class="screen active">
+  <div class="title-emoji">🔎✂️</div>
+  <h1 class="wobbly">わけわけ ガッチャンコ！</h1>
+  <div class="sub">●の ずを わけて、7のだんの こたえを たしかめよう</div>
+  <div id="danLabel">7のだん</div>
+  <div id="levelLabel">① レベルを えらぼう</div>
+  <div id="levelRow">
+    <button class="lvbtn" data-lv="easy"><span class="lvname">🌱 かんたん</span><span class="lvdesc">わけると しきが 出てくるよ</span></button>
+    <button class="lvbtn hard" data-lv="hard"><span class="lvname">🔥 じょうきゅう</span><span class="lvdesc">じぶんで しきを たてよう</span></button>
+  </div>
+  <div id="kakeLabel">② しらべたい しきを えらぼう</div>
+  <div id="kakeGrid"></div>
+</div>
+
+<!-- ===== プレイ ===== -->
+<div id="screen-play" class="screen">
+  <div id="probBar"></div>
+  <div id="speech">
+    <div id="chara">🔎</div>
+    <div id="bubble" class="wobbly2"></div>
+  </div>
+  <div id="playmain">
+    <div id="arrayPane" class="wobbly2">
+      <div id="divBtns">
+        <button class="divbtn" id="btnUp">▲</button>
+        <button class="divbtn" id="btnDown">▼</button>
+      </div>
+      <div id="arrayStage">
+        <div id="dotField"></div>
+        <div id="braces">
+          <div class="brace top"><div class="bline"></div><div class="blabel" id="braceTop"></div></div>
+          <div class="brace btm"><div class="bline"></div><div class="blabel" id="braceBtm"></div></div>
+        </div>
+      </div>
+    </div>
+    <div id="sidePane">
+      <div id="eqCard" class="wobbly">
+        <div id="eqMain"></div>
+        <div id="eqSteps" style="display:none"></div>
+        <div id="eqSub"></div>
+      </div>
+      <div id="actionRow">
+        <button class="btn go wobbly" id="btnCheck">この わけかたで しきを たてる！</button>
+        <button class="btn secondary wobbly" id="btnResplit" style="display:none">↩ わけかたを かえる</button>
+        <button class="btn secondary wobbly2" id="hintBtn" style="display:none">💡 ヒント</button>
+      </div>
+      <div id="pad"></div>
+    </div>
+  </div>
+
+  <div id="doneOverlay">
+    <div id="doneCard" class="wobbly">
+      <div id="doneTitle">たしかめ OK！</div>
+      <div id="doneEq"></div>
+      <div id="doneStamp">🔎💮</div>
+      <div id="doneBtns"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== きろく ===== -->
+<div id="screen-record" class="screen">
+  <h2 class="wobbly">わけわけ きろく</h2>
+  <div id="recHint">💮＝たしかめた わけかた。その中で「いちばん けいさんしやすい！」と<br>おもう ますを タップすると ⭐に なるよ。</div>
+  <div id="recMsg">&nbsp;</div>
+  <div id="recTableWrap" class="wobbly2">
+    <table id="recTable"></table>
+  </div>
+  <div id="recBackBtns">
+    <button class="btn wobbly" id="btnBackPlay">もどって つづける</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* ================= だんごとの もんだい(ミッション) ================= */
+function missionsOf(d){
+  const kA = Math.min(5, d - 1);              // 5(または さいだい)で わける
+  const kB = Math.max(1, Math.floor(d / 2));  // まんなかで わける
+  const kC = 1;                               // はしで わける
+  const raw = [
+    {n:6, k:kA}, {n:6, k:kB},
+    {n:4, k:kA},
+    {n:8, k:kA}, {n:8, k:kC},
+    {n:9, k:kA}, {n:9, k:kB},
+    {n:7, k:null}, {n:8, k:null}, {n:9, k:null}
+  ];
+  /* おなじ (n, わけかた) は 1つに まとめる（k と d-k は おなじ わけかた） */
+  const seen = new Set();
+  const out = [];
+  raw.forEach(m=>{
+    const key = m.k === null ? m.n + ':free' : m.n + ':' + Math.min(m.k, d - m.k);
+    if(seen.has(key)) return;
+    seen.add(key);
+    out.push(m);
+  });
+  return out;
+}
+function missionText(d, m){
+  if(m.k === null) return d + '×' + m.n + ' を すきな わけかたで たしかめよう';
+  return d + '×' + m.n + ' を ' + m.k + 'と' + (d - m.k) + ' に わけて たしかめよう';
+}
+function defaultK(d){ return d > 5 ? 5 : Math.ceil(d / 2); }
+
+/* ================= 状態 ================= */
+const SAVE_KEY = 'array-wakewake-kuku-v1';
+const OLD_KEY = 'array-wakewake-v2';
+let curDan = 7;
+let MISSIONS = missionsOf(curDan);
+let mode = 'free';
+let missionIdxAll = {};      // missionIdxAll[d] = つぎのミッション番号
+let curN = 6;
+let splitK = 5;
+let phase = 'split';
+let checkStep = 0;
+let inputBuf = '';
+let wrongCount = 0;
+let hintLevel = 0;
+let fBuf = ['','','',''];   // しきの □ (a, n, b, n)
+let fIdx = 0;
+let level = 'easy';         // 'easy' | 'hard'
+let recAll = {};             // recAll[d][n][k] = true
+let favsAll = {};            // favsAll[d][n] = k
+
+function recD(){ if(!recAll[curDan]) recAll[curDan] = {}; return recAll[curDan]; }
+function favD(){ if(!favsAll[curDan]) favsAll[curDan] = {}; return favsAll[curDan]; }
+function mIdx(){ return missionIdxAll[curDan] || 0; }
+function setMIdx(v){ missionIdxAll[curDan] = v; }
+
+/* ================= セーブ ================= */
+function save(){
+  try{
+    localStorage.setItem(SAVE_KEY, JSON.stringify({recAll, favsAll, missionIdxAll, lastDan:curDan, level}));
+  }catch(e){}
+}
+function load(){
+  try{
+    const d = JSON.parse(localStorage.getItem(SAVE_KEY));
+    if(d){
+      if(d.recAll) recAll = d.recAll;
+      if(d.favsAll) favsAll = d.favsAll;
+      if(d.missionIdxAll) missionIdxAll = d.missionIdxAll;
+      if(d.level === 'easy' || d.level === 'hard') level = d.level;
+    }else{
+      /* 7のだん版からの ひきつぎ */
+      const o = JSON.parse(localStorage.getItem(OLD_KEY));
+      if(o){
+        if(o.rec) recAll[7] = o.rec;
+        if(o.favs) favsAll[7] = o.favs;
+        if(typeof o.missionIdx === 'number') missionIdxAll[7] = o.missionIdx;
+      }
+    }
+  }catch(e){}
+  MISSIONS = missionsOf(curDan);
+}
+
+/* ================= サウンド ================= */
+let actx = null;
+function audio(){
+  if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} }
+  if(actx && actx.state === 'suspended') actx.resume();
+  return actx;
+}
+function tone(f, st, du, ty, vo){
+  const ac = audio(); if(!ac) return;
+  const o = ac.createOscillator(), g = ac.createGain();
+  o.type = ty || 'sine'; o.frequency.value = f;
+  g.gain.setValueAtTime(0.0001, ac.currentTime + st);
+  g.gain.linearRampToValueAtTime(vo || .18, ac.currentTime + st + .02);
+  g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + st + du);
+  o.connect(g).connect(ac.destination);
+  o.start(ac.currentTime + st); o.stop(ac.currentTime + st + du + .05);
+}
+function sTap(){ tone(660,0,.08,'triangle',.12); }
+function sSlide(){ tone(520,0,.06,'triangle',.1); }
+function sStepOK(){ tone(784,0,.1,'sine',.16); }
+function sOK(){ tone(880,0,.12,'sine',.2); tone(1320,.12,.22,'sine',.2); }
+function sNG(){ tone(196,0,.18,'square',.1); tone(147,.16,.25,'square',.1); }
+function sMaster(){ [523,659,784,1047].forEach((f,i)=>tone(f,i*.12,.28,'triangle',.18)); }
+function sStar(){ tone(1047,0,.1,'triangle',.16); tone(1568,.1,.2,'triangle',.16); }
+function sFanfare(){ [523,659,784,1047].forEach((f,i)=>tone(f,i*.13,.3,'triangle',.18)); tone(1319,.55,.5,'triangle',.2); }
+
+/* ================= ユーティリティ ================= */
+const $ = id => document.getElementById(id);
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+}
+function setBubble(t){ $('bubble').textContent = t; }
+function recGot(n,k){ const r = recD(); return !!(r[n] && r[n][k]); }
+function markRec(n,k){ const r = recD(); if(!r[n]) r[n] = {}; r[n][k] = true; save(); }
+function isMaster(n){
+  for(let k=1;k<curDan;k++){ if(!recGot(n,k)) return false; }
+  return true;
+}
+function gotCount(n){
+  let c = 0; for(let k=1;k<curDan;k++) if(recGot(n,k)) c++;
+  return c;
+}
+function curMission(){ return mode==='mission' && mIdx() < MISSIONS.length ? MISSIONS[mIdx()] : null; }
+function splitMatchesMission(){
+  const m = curMission();
+  if(!m || m.k === null) return true;
+  return splitK === m.k || splitK === curDan - m.k;
+}
+function danHasRecord(d){
+  const r = recAll[d];
+  if(!r) return false;
+  for(const n in r){ for(const k in r[n]){ if(r[n][k]) return true; } }
+  return false;
+}
+
+/* ================= タイトル ================= */
+function renderKakeGrid(){
+  const g = $('kakeGrid');
+  g.innerHTML = '';
+  for(let n=1;n<=9;n++){
+    const b = document.createElement('button');
+    b.className = 'danbtn';
+    b.textContent = curDan + '×' + n;
+    if(isMaster(n)) b.style.background = 'var(--green)';
+    const c = gotCount(n);
+    if(c > 0){
+      const m = document.createElement('span');
+      m.className = 'mini';
+      m.textContent = isMaster(n) ? '👑' : '💮';
+      b.appendChild(m);
+    }
+    b.addEventListener('click', ()=>{
+      audio(); sTap();
+      mode = 'free';
+      curN = n;
+      showScreen('screen-play');
+      startSplit(false);
+    });
+    g.appendChild(b);
+  }
+}
+function renderLevel(){
+  document.querySelectorAll('.lvbtn').forEach(b=>b.classList.toggle('sel', b.dataset.lv === level));
+}
+document.querySelectorAll('.lvbtn').forEach(b=>{
+  b.addEventListener('click', ()=>{ audio(); sTap(); level = b.dataset.lv; save(); renderLevel(); });
+});
+function updateTitle(){
+  renderKakeGrid();
+  renderLevel();
+}
+
+/* ================= 上部バー ================= */
+function renderProbBar(){
+  const bar = $('probBar');
+  bar.innerHTML = '';
+  const dt = document.createElement('span');
+  dt.className = 'dantag';
+  dt.textContent = curDan + 'のだん ' + (level === 'easy' ? '🌱かんたん' : '🔥じょうきゅう');
+  bar.appendChild(dt);
+  if(mode === 'mission'){
+    const bn = document.createElement('div');
+    bn.id = 'missionBanner';
+    bn.textContent = mIdx() >= MISSIONS.length
+      ? '👑 もんだい ぜんぶ クリア！'
+      : '📋 もんだい ' + (mIdx()+1) + '/' + MISSIONS.length + '： ' + missionText(curDan, MISSIONS[mIdx()]);
+    bar.appendChild(bn);
+  }else{
+    for(let n=1;n<=9;n++){
+      const b = document.createElement('button');
+      b.className = 'pchip' + (n===curN?' now':'') + (isMaster(n)?' master':'');
+      b.textContent = curDan + '×' + n;
+      const c = gotCount(n);
+      if(c > 0){
+        const m = document.createElement('span');
+        m.className = 'mini';
+        m.textContent = isMaster(n) ? '👑' : '💮';
+        b.appendChild(m);
+      }
+      b.addEventListener('click', ()=>{ sTap(); curN = n; startSplit(true); });
+      bar.appendChild(b);
+    }
+  }
+  const rb = document.createElement('button');
+  rb.className = 'smallbtn';
+  rb.textContent = '📖 きろく';
+  rb.addEventListener('click', ()=>{ sTap(); openRecord(); });
+  bar.appendChild(rb);
+  const hb = document.createElement('button');
+  hb.className = 'smallbtn';
+  hb.textContent = '🏠 はじめに';
+  hb.addEventListener('click', ()=>{ sTap(); updateTitle(); showScreen('screen-title'); });
+  bar.appendChild(hb);
+}
+
+/* ================= ●のず描画 ================= */
+let dotSize = 20, rowGap = 4;
+function calcDotSize(){
+  const pane = $('arrayPane');
+  const w = pane.clientWidth - 140, h = pane.clientHeight - 40;
+  const bySize = Math.min(
+    Math.floor((w - (curN-1)*4) / Math.max(curN,1)),
+    Math.floor((h - (curDan-1)*4 - 10) / curDan)
+  );
+  dotSize = Math.max(12, Math.min(46, bySize));
+}
+function renderArray(){
+  calcDotSize();
+  const field = $('dotField');
+  field.innerHTML = '';
+  document.documentElement.style.setProperty('--dotsz', dotSize + 'px');
+  for(let r=0;r<curDan;r++){
+    const row = document.createElement('div');
+    row.className = 'aRow';
+    if(r === splitK - 1) row.style.marginBottom = (rowGap + 14) + 'px';
+    for(let c=0;c<curN;c++){
+      const d = document.createElement('span');
+      d.className = 'adot' + (r >= splitK ? ' btm' : '');
+      row.appendChild(d);
+    }
+    field.appendChild(row);
+  }
+  const div = document.createElement('div');
+  div.id = 'divider';
+  const line = document.createElement('div'); line.id = 'divLine';
+  const handle = document.createElement('div'); handle.id = 'divHandle';
+  handle.textContent = '⇕ うごかす';
+  div.appendChild(line); div.appendChild(handle);
+  const y = splitK * (dotSize + rowGap) + 14/2 - rowGap/2;
+  div.style.top = y + 'px';
+  field.appendChild(div);
+  attachDrag(div, field);
+  renderBraces();
+  renderEquation();
+  updateCheckButton();
+}
+function renderBraces(){
+  const topH = splitK * (dotSize + rowGap);
+  const btmH = (curDan - splitK) * (dotSize + rowGap);
+  const bt = document.querySelector('.brace.top');
+  const bb = document.querySelector('.brace.btm');
+  bt.style.height = (topH + 7) + 'px';
+  bb.style.height = btmH + 'px';
+  bb.style.marginTop = '10px';
+  const show = phase === 'check' || level === 'easy';
+  $('braceTop').textContent = show ? splitK + '×' + curN : '';
+  $('braceBtm').textContent = show ? (curDan - splitK) + '×' + curN : '';
+}
+function attachDrag(div, field){
+  let dragging = false;
+  function toK(clientY){
+    const rect = field.getBoundingClientRect();
+    const y = clientY - rect.top;
+    let k = Math.round((y - 7) / (dotSize + rowGap));
+    return Math.max(1, Math.min(curDan - 1, k));
+  }
+  div.addEventListener('pointerdown', e=>{
+    if(phase !== 'split') return;
+    dragging = true;
+    div.classList.add('drag');
+    div.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  div.addEventListener('pointermove', e=>{
+    if(!dragging) return;
+    const k = toK(e.clientY);
+    if(k !== splitK){ splitK = k; sSlide(); renderArray(); }
+  });
+  ['pointerup','pointercancel'].forEach(ev=>{
+    div.addEventListener(ev, ()=>{ dragging = false; div.classList.remove('drag'); });
+  });
+}
+function nudge(dir){
+  if(phase !== 'split') return;
+  const k = Math.max(1, Math.min(curDan - 1, splitK + dir));
+  if(k !== splitK){ splitK = k; sSlide(); renderArray(); }
+}
+$('btnUp').addEventListener('click', ()=>nudge(-1));
+$('btnDown').addEventListener('click', ()=>nudge(1));
+
+/* ================= しき表示 ================= */
+function boxHTML(){ return '<span class="box">\u3000</span>'; }
+function renderEquation(){
+  const d = curDan, n = curN, a = splitK, b = curDan - splitK;
+  const steps = $('eqSteps');
+  if(phase === 'split' && level === 'easy'){
+    $('eqMain').innerHTML =
+      d + '×' + n + ' ＝ <span class="tpart">' + a + '×' + n + '</span> + <span class="bpart">' + b + '×' + n + '</span>';
+    steps.innerHTML = '';
+    steps.style.display = 'none';
+    $('eqSub').textContent = 'しきり線を うごかして、わけかたを きめよう';
+  }else if(phase === 'split' || phase === 'formula'){
+    const fb = i => '<span class="fbox' + (phase === 'split' ? ' idle' : (i === fIdx ? ' cur' : '')) +
+      '" data-i="' + i + '">' + (fBuf[i] === '' ? '\u3000' : fBuf[i]) + '</span>';
+    $('eqMain').innerHTML = d + '×' + n + ' ＝ <span class="tpart">' + fb(0) + '×' + fb(1) +
+      '</span> ＋ <span class="bpart">' + fb(2) + '×' + fb(3) + '</span>';
+    steps.innerHTML = '';
+    steps.style.display = 'none';
+    $('eqSub').textContent = phase === 'split'
+      ? 'しきり線を うごかして、わけかたを きめよう'
+      : '●の ずを 見て □に かずを 入れよう（□を タップすると えらべるよ）';
+  }else{
+    $('eqMain').innerHTML =
+      d + '×' + n + ' ＝ <span class="tpart">' + a + '×' + n + '</span> + <span class="bpart">' + b + '×' + n + '</span>';
+    steps.style.display = '';
+    const ans = v => '<span class="done">' + v + '</span>';
+    const lines = [
+      '<span class="tpart">' + a + '×' + n + '</span> ＝ ' + (checkStep > 0 ? ans(a*n) : boxHTML()),
+      '<span class="bpart">' + b + '×' + n + '</span> ＝ ' + (checkStep > 1 ? ans(b*n) : boxHTML()),
+      '<span class="tpart">' + a*n + '</span> + <span class="bpart">' + b*n + '</span> ＝ ' + boxHTML()
+    ];
+    let h = '';
+    for(let i=0;i<=checkStep;i++){
+      h += '<div class="stepLine' + (i === checkStep ? ' now' : '') + '">' + lines[i] + '</div>';
+    }
+    steps.innerHTML = h;
+    if(checkStep === 0) $('eqSub').textContent = 'まず うえの ' + a + 'れつぶん（' + a + '×' + n + '）を かんがえよう';
+    else if(checkStep === 1) $('eqSub').textContent = 'つぎは したの ' + b + 'れつぶん（' + b + '×' + n + '）を かんがえよう';
+    else $('eqSub').textContent = '2つを たすと ' + d + '×' + n + ' の こたえに なるかな?';
+  }
+  updateInputDisplay();
+  fitEq();
+}
+/* しきが 1行に おさまるように 文字を ちいさくする */
+function fitEq(){
+  const el = $('eqMain');
+  el.style.fontSize = '';
+  let fs = parseFloat(getComputedStyle(el).fontSize);
+  while(el.scrollWidth > el.clientWidth && fs > 12){
+    fs -= 1;
+    el.style.fontSize = fs + 'px';
+  }
+}
+function updateInputDisplay(){
+  const box = document.querySelector('#eqSteps .stepLine.now .box');
+  if(box) box.textContent = inputBuf === '' ? '\u3000' : inputBuf;
+}
+function updateCheckButton(){
+  const ok = splitMatchesMission();
+  $('btnCheck').disabled = !ok && phase === 'split';
+  const m = curMission();
+  if(phase === 'split' && m && m.k !== null){
+    if(ok) setBubble('その わけかただ！ 「たしかめる」を おそう！');
+    else setBubble('「' + m.k + 'と' + (curDan - m.k) + '」に なるように しきり線を うごかそう。');
+  }
+}
+
+/* ================= フェーズ ================= */
+function pickStartK(m){
+  /* ミッションの こたえと ちがう ばしょから スタートさせる */
+  if(!m || m.k === null) return defaultK(curDan);
+  for(let s=1;s<curDan;s++){
+    if(s !== m.k && s !== curDan - m.k) return s;
+  }
+  return m.k;   // d=2 など よけられない とき
+}
+function startSplit(keepK){
+  phase = 'split'; checkStep = 0; inputBuf = ''; wrongCount = 0; hintLevel = 0;
+  fBuf = ['','','','']; fIdx = 0;
+  $('btnResplit').style.display = 'none';
+  $('btnCheck').textContent = level === 'easy' ? 'この わけかたで たしかめる！' : 'この わけかたで しきを たてる！';
+  const m = curMission();
+  if(m){
+    curN = m.n;
+    if(!keepK) splitK = pickStartK(m);
+  }else if(!keepK){
+    splitK = defaultK(curDan);
+  }
+  if(splitK < 1 || splitK > curDan - 1) splitK = defaultK(curDan);
+  $('btnCheck').style.display = '';
+  $('hintBtn').style.display = 'none';
+  $('pad').classList.remove('active');
+  renderProbBar();
+  renderArray();
+  if(m){
+    if(m.k === null) setBubble(curDan + '×' + curN + ' を すきな わけかたで たしかめよう！');
+  }else{
+    setBubble(curDan + '×' + curN + ' を しらべよう。' + curDan + 'れつを どこで わける?');
+  }
+}
+$('btnCheck').addEventListener('click', ()=>{
+  if($('btnCheck').disabled) return;
+  sTap();
+  if(level === 'easy'){
+    phase = 'check'; checkStep = 0; inputBuf = ''; wrongCount = 0; hintLevel = 0;
+    $('btnCheck').style.display = 'none';
+    $('btnResplit').style.display = '';
+    $('hintBtn').style.display = '';
+    $('pad').classList.add('active');
+    setBubble(splitK + 'と' + (curDan - splitK) + 'に わけたね！ じゅんばんに けいさんしよう。');
+    renderEquation();
+    return;
+  }
+  phase = 'formula'; fBuf = ['','','','']; fIdx = 0; wrongCount = 0; hintLevel = 0;
+  $('btnCheck').style.display = 'none';
+  $('btnResplit').style.display = '';
+  $('hintBtn').style.display = '';
+  $('pad').classList.add('active');
+  setBubble('わけかたが きまったね！ ●の ずを 見て、しきを たてよう。');
+  renderEquation();
+});
+$('btnResplit').addEventListener('click', ()=>{
+  sTap();
+  startSplit(true);
+  setBubble('しきり線を うごかして、わけかたを えらびなおそう。');
+});
+$('eqMain').addEventListener('click', e=>{
+  const bx = e.target.closest('.fbox');
+  if(!bx || phase !== 'formula') return;
+  sTap();
+  fIdx = Number(bx.dataset.i);
+  renderEquation();
+});
+function submitFormula(){
+  if(fBuf.some(v=>v === '')){
+    sNG();
+    setBubble('まだ あいている □が あるよ。');
+    fIdx = fBuf.findIndex(v=>v === '');
+    renderEquation();
+    return;
+  }
+  const n = curN, a = splitK, b = curDan - splitK;
+  const v = fBuf.map(Number);
+  const same = (p,q,r,s2) => v[0]===p && v[1]===q && v[2]===r && v[3]===s2;
+  if(same(a,n,b,n) || same(b,n,a,n)){
+    sOK();
+    phase = 'check'; checkStep = 0; inputBuf = ''; wrongCount = 0; hintLevel = 0;
+    $('btnResplit').style.display = 'none';
+    setBubble('しきが たてられたね！ つぎは けいさんして たしかめよう。');
+    renderBraces();
+    renderEquation();
+    return;
+  }
+  wrongCount++; sNG();
+  const card = $('eqCard');
+  card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+  if(wrongCount >= 2){ hintLevel++; showHint(); return; }
+  if(same(n,a,n,b) || same(n,b,n,a))
+    setBubble('かける じゅんばんが ぎゃくかも。×の まえは れつの かず、うしろは 1れつの ●の かずだよ。');
+  else if(v[1] !== n || v[3] !== n)
+    setBubble('×の うしろは 1れつに ならんだ ●の かずだよ。かぞえて みよう。');
+  else
+    setBubble('オレンジと あおは それぞれ なんれつ あるかな? かぞえて みよう。');
+}
+
+/* ================= テンキー ================= */
+function buildPad(){
+  const pad = $('pad');
+  pad.innerHTML = '';
+  ['7','8','9','4','5','6','1','2','3','0','del','ok'].forEach(k=>{
+    const b = document.createElement('button');
+    if(k==='del'){ b.className='key del'; b.textContent='けす'; }
+    else if(k==='ok'){ b.className='key ok'; b.textContent='こたえる'; }
+    else { b.className='key'; b.textContent=k; }
+    b.addEventListener('click', ()=>pressKey(k));
+    pad.appendChild(b);
+  });
+}
+function pressKey(k){
+  if(phase === 'formula'){
+    if(k === 'ok'){ submitFormula(); return; }
+    if(k === 'del'){
+      if(fBuf[fIdx] === '' && fIdx > 0) fIdx--;
+      fBuf[fIdx] = '';
+    }else{
+      fBuf[fIdx] = k;
+      if(fIdx < 3) fIdx++;
+    }
+    sTap();
+    renderEquation();
+    return;
+  }
+  if(phase !== 'check') return;
+  if(k==='del'){ inputBuf=''; sTap(); }
+  else if(k==='ok'){ submit(); return; }
+  else { if(inputBuf.length>=2) inputBuf=''; inputBuf+=k; sTap(); }
+  updateInputDisplay();
+}
+document.addEventListener('keydown', e=>{
+  if(!$('screen-play').classList.contains('active')) return;
+  if($('doneOverlay').classList.contains('active')) return;
+  if(/^[0-9]$/.test(e.key)) pressKey(e.key);
+  else if(e.key==='Backspace') pressKey('del');
+  else if(e.key==='Enter'){
+    if(phase==='split') $('btnCheck').click();
+    else pressKey('ok');
+  }
+});
+
+/* ================= こたえあわせ ================= */
+function expected(){
+  const n = curN, a = splitK, b = curDan - splitK;
+  if(checkStep === 0) return a*n;
+  if(checkStep === 1) return b*n;
+  return curDan*n;
+}
+function submit(){
+  if(inputBuf === '') return;
+  const v = parseInt(inputBuf, 10);
+  if(v === expected()){
+    if(checkStep < 2){
+      sStepOK();
+      checkStep++; inputBuf=''; wrongCount=0; hintLevel=0;
+      setBubble(checkStep===1 ? 'その ちょうし！' : 'あとは たすだけ！');
+      renderEquation();
+    }else{
+      splitDone();
+    }
+  }else{
+    wrongCount++; sNG();
+    const card = $('eqCard');
+    card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+    inputBuf=''; updateInputDisplay();
+    if(wrongCount >= 2){ hintLevel++; showHint(); }
+    else setBubble('おしい！ もういちど かんがえて みよう。');
+  }
+}
+$('hintBtn').addEventListener('click', ()=>{ sTap(); hintLevel++; showHint(); });
+function showHint(){
+  const n = curN, a = splitK, b = curDan - splitK;
+  if(phase === 'formula'){
+    if(hintLevel === 1) setBubble('オレンジは なんれつ? 1れつに ●は なんこ? あおも おなじように かぞえよう。');
+    else setBubble('オレンジは ' + a + 'れつ、あおは ' + b + 'れつ。1れつに ●は ' + n + 'こ だよ。');
+    return;
+  }
+  if(checkStep === 0){
+    if(hintLevel === 1) setBubble(a + 'のだんの 九九だよ。「' + a + '×' + n + '」を となえて みよう。');
+    else setBubble('オレンジの ●を かぞえても いいよ。1れつに ' + n + 'こ ずつだね。');
+  }else if(checkStep === 1){
+    if(hintLevel === 1) setBubble(b + 'のだんの 九九だよ。「' + b + '×' + n + '」を となえて みよう。');
+    else setBubble('あおの ●を かぞえても いいよ。1れつに ' + n + 'こ ずつだね。');
+  }else{
+    if(hintLevel === 1) setBubble(a*n + ' に ' + b*n + ' を たすよ。くり上がりに 気をつけて！');
+    else setBubble('●を ぜんぶ かぞえると… ' + curDan + '×' + n + ' の こたえと おなじに なるはず！');
+  }
+}
+
+/* ================= たしかめ完了 ================= */
+function makeDoneBtn(text, cls, fn){
+  const b = document.createElement('button');
+  b.className = 'btn ' + cls;
+  b.textContent = text;
+  b.addEventListener('click', fn);
+  return b;
+}
+function splitDone(){
+  const d = curDan, n = curN, a = splitK, b = curDan - splitK;
+  const masterBefore = isMaster(n);
+  markRec(n, a);
+  const nowMaster = isMaster(n);
+  $('doneEq').textContent = d + '×' + n + ' ＝ ' + a + '×' + n + ' + ' + b + '×' + n + ' ＝ ' + d*n;
+
+  const btns = $('doneBtns');
+  btns.innerHTML = '';
+
+  if(mode === 'mission'){
+    setMIdx(mIdx() + 1);
+    save();
+    const finished = mIdx() >= MISSIONS.length;
+    if(finished){
+      sFanfare(); confetti();
+      $('doneTitle').textContent = '🎉 ' + d + 'のだんの もんだい ぜんぶ クリア！';
+      $('doneStamp').textContent = '👑🏆👑';
+      btns.appendChild(makeDoneBtn('きろくを みる', 'secondary wobbly2', ()=>{
+        sTap(); $('doneOverlay').classList.remove('active'); openRecord();
+      }));
+      btns.appendChild(makeDoneBtn('じゆうに しらべる', 'go wobbly', ()=>{
+        sTap(); $('doneOverlay').classList.remove('active');
+        mode = 'free'; startSplit(true);
+      }));
+    }else{
+      if(nowMaster && !masterBefore){ sMaster(); confetti(); }
+      else sOK();
+      $('doneTitle').textContent = 'もんだい ' + mIdx() + ' クリア！';
+      $('doneStamp').textContent = '🔎💮';
+      btns.appendChild(makeDoneBtn('つぎの もんだいへ ▶', 'go wobbly', ()=>{
+        sTap(); $('doneOverlay').classList.remove('active');
+        startSplit(false);
+      }));
+      btns.appendChild(makeDoneBtn('きろくを みる', 'secondary wobbly2', ()=>{
+        sTap(); $('doneOverlay').classList.remove('active'); openRecord();
+      }));
+    }
+  }else{
+    if(nowMaster && !masterBefore){ sMaster(); confetti(); }
+    else sOK();
+    $('doneTitle').textContent = nowMaster && !masterBefore ? '👑 ' + d + '×' + n + ' マスター！' : 'たしかめ OK！';
+    $('doneStamp').textContent = nowMaster ? '👑💮' : '🔎💮';
+    btns.appendChild(makeDoneBtn('ちがう わけかた', 'secondary wobbly2', ()=>{
+      sTap(); $('doneOverlay').classList.remove('active');
+      startSplit(true);
+      setBubble('こんどは どこで わける? しきり線を うごかそう！');
+    }));
+    btns.appendChild(makeDoneBtn('ちがう しき', 'secondary wobbly', ()=>{
+      sTap(); $('doneOverlay').classList.remove('active');
+      curN = curN >= 9 ? 1 : curN + 1;
+      startSplit(false);
+    }));
+    btns.appendChild(makeDoneBtn('きろくを みる', 'secondary wobbly2', ()=>{
+      sTap(); $('doneOverlay').classList.remove('active'); openRecord();
+    }));
+  }
+  $('doneOverlay').classList.add('active');
+  renderProbBar();
+  const c = gotCount(n);
+  if(c >= 2 && !favD()[n]){
+    setBubble('わけかたが ' + c + 'つ たまったよ。どれが いちばん けいさんしやすかった? きろくで ⭐を つけよう！');
+  }
+}
+
+/* ================= きろく画面 ================= */
+function setRecMsg(t){ $('recMsg').textContent = t || '\u00A0'; }
+function renderRecord(){
+  const d = curDan;
+  const t = $('recTable');
+  t.innerHTML = '';
+  const head = document.createElement('tr');
+  let hh = '<th>' + d + 'のだん</th>';
+  for(let k=1;k<d;k++) hh += '<th>' + k + 'と' + (d-k) + '</th>';
+  head.innerHTML = hh;
+  t.appendChild(head);
+  for(let n=1;n<=9;n++){
+    const tr = document.createElement('tr');
+    const rh = document.createElement('td');
+    rh.className = 'rowh';
+    rh.textContent = d + '×' + n + (isMaster(n) ? ' 👑' : '');
+    tr.appendChild(rh);
+    for(let k=1;k<d;k++){
+      const td = document.createElement('td');
+      const got = recGot(n,k);
+      const fav = got && Number(favD()[n]) === k;
+      td.className = 'cell' + (got ? ' got' : '') + (fav ? ' fav' : '');
+      td.dataset.n = n; td.dataset.k = k;
+      td.textContent = got ? (fav ? '⭐' : '💮') : '';
+      tr.appendChild(td);
+    }
+    t.appendChild(tr);
+  }
+}
+$('recTable').addEventListener('click', e=>{
+  const td = e.target.closest('td.cell');
+  if(!td) return;
+  const n = Number(td.dataset.n), k = Number(td.dataset.k);
+  if(!recGot(n,k)){
+    sNG();
+    setRecMsg('そこは まだ たしかめて いない わけかただよ。');
+    td.classList.remove('shake'); void td.offsetWidth; td.classList.add('shake');
+    return;
+  }
+  const f = favD();
+  if(Number(f[n]) === k){
+    delete f[n];
+    sTap();
+    setRecMsg(curDan + '×' + n + ' の ⭐を はずしたよ。');
+  }else{
+    f[n] = k;
+    sStar();
+    setRecMsg(curDan + '×' + n + ' は 「' + k + 'と' + (curDan-k) + '」が けいさんしやすいんだね！ ⭐');
+  }
+  save();
+  renderRecord();
+});
+function openRecord(){
+  setRecMsg('');
+  renderRecord();
+  showScreen('screen-record');
+}
+$('btnBackPlay').addEventListener('click', ()=>{
+  sTap();
+  showScreen('screen-play');
+  startSplit(true);
+});
+
+/* ================= かみふぶき ================= */
+function confetti(){
+  const emo = ['🎉','✨','💮','⭐','🔎'];
+  for(let i=0;i<24;i++){
+    setTimeout(()=>{
+      const s = document.createElement('span');
+      s.className = 'confetti';
+      s.textContent = emo[Math.floor(Math.random()*emo.length)];
+      s.style.left = Math.random()*100 + 'vw';
+      s.style.animationDuration = (2.2 + Math.random()*2) + 's';
+      document.body.appendChild(s);
+      setTimeout(()=>s.remove(), 4600);
+    }, i*80);
+  }
+}
+
+/* ================= 開始 ================= */
+window.addEventListener('resize', ()=>{
+  if($('screen-play').classList.contains('active')) renderArray();
+});
+buildPad();
+load();
+curDan = 7;
+MISSIONS = missionsOf(curDan);
+updateTitle();
+</script>
+</body>
+</html>
